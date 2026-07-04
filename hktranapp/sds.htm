@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>路線App HKTranApp — 系統設計 System Design</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+            line-height: 1.7;
+            color: #1a1a1a;
+            background: #f5f5f7;
+            padding: 20px;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .header img {
+            width: 80px; height: 80px;
+            border-radius: 18px;
+            margin-bottom: 12px;
+        }
+        .header h1 { font-size: 1.6em; color: #1a1a1a; }
+        .header p { color: #86868b; font-size: 0.9em; margin-top: 4px; }
+        .lang-tabs {
+            display: flex; gap: 8px; justify-content: center;
+            margin-bottom: 24px; flex-wrap: wrap;
+        }
+        .lang-tabs a {
+            padding: 6px 16px; border-radius: 20px;
+            background: #e8e8ed; color: #1a1a1a;
+            text-decoration: none; font-size: 0.85em;
+            transition: background 0.2s;
+        }
+        .lang-tabs a:hover, .lang-tabs a.active { background: #007aff; color: #fff; }
+        .lang-section { display: none; }
+        .lang-section.active { display: block; }
+        h2 {
+            font-size: 1.25em; margin-top: 28px; margin-bottom: 10px;
+            color: #1d1d1f; padding-bottom: 4px; border-bottom: 2px solid #e8e8ed;
+        }
+        h3 { font-size: 1.05em; margin-top: 18px; margin-bottom: 6px; color: #1d1d1f; }
+        p, li { margin-bottom: 8px; color: #424245; }
+        ul, ol { padding-left: 20px; margin-bottom: 12px; }
+        table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.9em; }
+        th, td { border: 1px solid #e0e0e0; padding: 8px 12px; text-align: left; }
+        th { background: #f5f5f7; font-weight: 600; color: #1d1d1f; }
+        code {
+            background: #f0f0f3; padding: 2px 6px; border-radius: 4px;
+            font-family: "SF Mono", monospace; font-size: 0.85em;
+        }
+        .arch-box {
+            background: #f5f5f7; border-radius: 12px; padding: 20px;
+            margin: 16px 0; font-family: monospace; font-size: 0.8em;
+            white-space: pre; overflow-x: auto; line-height: 1.4;
+        }
+        .layer-tag {
+            display: inline-block; padding: 2px 10px; border-radius: 4px;
+            font-size: 0.8em; font-weight: 600; color: #fff;
+        }
+        .layer-view { background: #007aff; }
+        .layer-service { background: #34c759; }
+        .layer-adapter { background: #ff9500; }
+        .layer-data { background: #af52de; }
+        a { color: #007aff; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <img src="icon.png" alt="路線App HKTranApp">
+        <h1>路線App / HKTranApp</h1>
+        <p>系統設計規格 · System Design Specification · 系统设计规格</p>
+    </div>
+
+    <div class="lang-tabs">
+        <a href="#" class="active" onclick="showLang('hant', event)">繁體中文</a>
+        <a href="#" onclick="showLang('hans', event)">简体中文</a>
+        <a href="#" onclick="showLang('en', event)">English</a>
+    </div>
+
+    <!-- 繁體中文 -->
+    <div class="lang-section active" id="lang-hant">
+        <h2>1. 系統架構</h2>
+        <p>HKTranApp 採用四層架構，各層職責分明：</p>
+        <table>
+            <tr><th>層級</th><th>職責</th><th>關鍵元件</th></tr>
+            <tr><td><span class="layer-tag layer-view">視圖層</span></td><td>UI 渲染、用戶互動、導航</td><td>DashboardView, SearchView, StopBrowserView</td></tr>
+            <tr><td><span class="layer-tag layer-service">服務層</span></td><td>業務邏輯、ETA 協調、搜尋</td><td>ETARefreshEngine, RouteSearchEngine, NetworkMonitor</td></tr>
+            <tr><td><span class="layer-tag layer-adapter">轉接器層</span></td><td>各交通機構 API 通訊及數據標準化</td><td>MTRAdapter, KMBAdapter, CitybusAdapter, FerryAdapter</td></tr>
+            <tr><td><span class="layer-tag layer-data">數據層</span></td><td>持久化儲存及記憶體模型</td><td>SwiftData Entities, Canonical Models</td></tr>
+        </table>
+
+        <h2>2. 技術棧</h2>
+        <table>
+            <tr><th>項目</th><th>技術</th></tr>
+            <tr><td>語言</td><td>Swift 5.9+</td></tr>
+            <tr><td>UI 框架</td><td>SwiftUI</td></tr>
+            <tr><td>持久化</td><td>SwiftData</td></tr>
+            <tr><td>網絡</td><td>URLSession + NWPathMonitor</td></tr>
+            <tr><td>並發</td><td>Swift Concurrency（async/await, TaskGroup）</td></tr>
+            <tr><td>第三方依賴</td><td>無（零第三方套件）</td></tr>
+        </table>
+
+        <h2>3. 數據模型</h2>
+
+        <h3>3.1 SwiftData 持久化實體</h3>
+        <table>
+            <tr><th>實體</th><th>用途</th><th>關鍵欄位</th></tr>
+            <tr><td><code>SavedCombinationEntity</code></td><td>已收藏的路線+車站組合</td><td>operatorType, routeNumber, rawStopId, groupID, cachedETAMinutes</td></tr>
+            <tr><td><code>WatchListGroup</code></td><td>收藏清單分組</td><td>name, sortOrder（最多 5 個）</td></tr>
+            <tr><td><code>RouteIndexEntry</code></td><td>本地路線搜尋索引</td><td>routeNumber, originTC, destinationTC, searchableText, direction</td></tr>
+            <tr><td><code>RouteIndexMeta</code></td><td>索引下載狀態</td><td>lastDownloadedAt, version, entryCount</td></tr>
+        </table>
+
+        <h3>3.2 標準化記憶體模型</h3>
+        <table>
+            <tr><th>模型</th><th>用途</th></tr>
+            <tr><td><code>CanonicalRoute</code></td><td>統一路線表示（跨交通工具）</td></tr>
+            <tr><td><code>CanonicalStop</code></td><td>統一車站表示</td></tr>
+            <tr><td><code>UnifiedETA</code></td><td>統一 ETA 表示（分鐘、時間、月台、是否即時）</td></tr>
+            <tr><td><code>RowETAState</code></td><td>7 態 UI 狀態機</td></tr>
+        </table>
+
+        <h2>4. 轉接器層設計</h2>
+        <p>每個交通機構的 API 格式各異，<code>OperatorAdapter</code> 協議將它們統一為標準模型。</p>
+
+        <h3>4.1 各轉接器比較</h3>
+        <table>
+            <tr><th>項目</th><th>MTR</th><th>KMB</th><th>Citybus</th><th>Ferry</th></tr>
+            <tr><td>API 來源</td><td>rt.data.gov.hk</td><td>data.etabus.gov.hk</td><td>rt.data.gov.hk</td><td>靜態時間表</td></tr>
+            <tr><td>速率限制</td><td>無</td><td>500ms</td><td>無</td><td>不適用</td></tr>
+            <tr><td>方向值</td><td>UP/DOWN</td><td>O/I</td><td>O/I</td><td>靜態</td></tr>
+            <tr><td>月台資訊</td><td>✓</td><td>✗</td><td>✗</td><td>✗</td></tr>
+            <tr><td>即時數據</td><td>✓</td><td>✓</td><td>✓</td><td>✗（固定班次）</td></tr>
+        </table>
+
+        <h3>4.2 KMB 速率限制器</h3>
+        <p>使用 Swift Actor 實現的 <code>KMBRateLimiter</code>，確保每次請求間隔不少於 500ms。多個組合共享同一車站時，會合併為單一 API 呼叫。</p>
+
+        <h2>5. 服務層設計</h2>
+
+        <h3>5.1 ETA 刷新引擎（ETARefreshEngine）</h3>
+        <table>
+            <tr><th>參數</th><th>值</th></tr>
+            <tr><td>自動刷新間隔</td><td>30 秒</td></tr>
+            <tr><td>API 超時</td><td>10 秒</td></tr>
+            <tr><td>MTR/CTB 並發</td><td>完全並行</td></tr>
+            <tr><td>KMB 並發</td><td>按 stopId 批次（500ms 間隔）</td></tr>
+            <tr><td>離線行為</td><td>跳過刷新，保留快取</td></tr>
+        </table>
+
+        <h3>5.2 網絡監控（NetworkMonitor）</h3>
+        <ul>
+            <li>基於 <code>NWPathMonitor</code> 的單例</li>
+            <li>狀態：上線（online）、離線（offline）、未知（unknown）</li>
+            <li>網絡恢復時自動觸發 ETA 刷新</li>
+        </ul>
+
+        <h3>5.3 路線搜尋引擎（RouteSearchEngine）</h3>
+        <ul>
+            <li>從 SwiftData 載入所有 RouteIndexEntry（~800-900 條）</li>
+            <li>記憶體內篩選：路線號碼 → 前綴 → 關鍵字</li>
+            <li>排序：交通工具優先級 → 精確匹配 → 前綴匹配</li>
+            <li>搜尋記錄：UserDefaults，最多 10 條</li>
+        </ul>
+
+        <h2>6. ETA 狀態機</h2>
+        <p>每張路線卡片根據快取新鮮度及網絡狀態，顯示 7 種視覺狀態：</p>
+        <table>
+            <tr><th>狀態</th><th>觸發條件</th><th>視覺效果</th></tr>
+            <tr><td>正常（Fresh）</td><td>快取 &lt; 90 秒</td><td>正常透明度</td></tr>
+            <tr><td>稍舊（Stale）</td><td>90 秒 – 5 分鐘</td><td>80% 透明度，琥珀時鐘</td></tr>
+            <tr><td>離線（Offline）</td><td>5–30 分鐘或無網絡</td><td>60% 透明度，離線圖示</td></tr>
+            <tr><td>錯誤（Error）</td><td>&gt; 30 分鐘或 API 失敗</td><td>紅色三角形</td></tr>
+            <tr><td>暫停服務</td><td>API 回傳空陣列</td><td>月亮圖示 +「暫停服務」</td></tr>
+            <tr><td>受限（Degraded）</td><td>ETA &gt; 120 分鐘</td><td>「點擊查看站名」</td></tr>
+            <tr><td>載入中</td><td>首次載入，無快取</td><td>載入動畫</td></tr>
+        </table>
+
+        <h2>7. 離線與錯誤處理</h2>
+        <ul>
+            <li><strong>API 失敗不清除快取：</strong>用戶始終看到最後已知數據</li>
+            <li><strong>逐個交通工具隔離：</strong>KMB 故障不影響 MTR/CTB 數據</li>
+            <li><strong>離線模式：</strong>顯示快取資料 + 離線提示橫幅</li>
+            <li><strong>網絡恢復：</strong>自動觸發即時刷新</li>
+            <li><strong>首次啟動離線：</strong>顯示專用恢復頁面 + 重試按鈕</li>
+        </ul>
+
+        <h2>8. 安全性</h2>
+        <table>
+            <tr><th>項目</th><th>狀態</th></tr>
+            <tr><td>API 認證</td><td>無需（全部使用公開開放數據 API）</td></tr>
+            <tr><td>傳輸安全</td><td>僅使用 HTTPS</td></tr>
+            <tr><td>個人資料收集</td><td>無</td></tr>
+            <tr><td>位置追蹤</td><td>無</td></tr>
+            <tr><td>廣告 / 追蹤 SDK</td><td>無</td></tr>
+            <tr><td>數據儲存</td><td>全部儲存在裝置本地</td></tr>
+            <tr><td>App Transport Security</td><td>啟用（系統預設）</td></tr>
+        </table>
+
+        <h2>9. 效能設計</h2>
+        <table>
+            <tr><th>指標</th><th>目標</th></tr>
+            <tr><td>12 個組合刷新時間</td><td>&lt; 2 秒</td></tr>
+            <tr><td>首個 ETA 回應</td><td>&lt; 200ms（漸進更新）</td></tr>
+            <tr><td>路線索引大小</td><td>~463KB（~800-900 條記錄）</td></tr>
+            <tr><td>搜尋結果上限</td><td>50 條</td></tr>
+            <tr><td>每卡片顯示 ETA</td><td>最多 3 個</td></tr>
+            <tr><td>站點 ETA 預覽</td><td>首 10 個站</td></tr>
+        </table>
+
+        <h2>10. 資料來源</h2>
+        <table>
+            <tr><th>交通工具</th><th>API</th><th>認證</th></tr>
+            <tr><td>港鐵 MTR</td><td>rt.data.gov.hk（getSchedule.php）</td><td>無</td></tr>
+            <tr><td>九巴 KMB</td><td>data.etabus.gov.hk</td><td>無</td></tr>
+            <tr><td>城巴 Citybus</td><td>rt.data.gov.hk（CTB ETA API v2）</td><td>無</td></tr>
+            <tr><td>渡輪 Ferry</td><td>靜態時間表（運輸署公開資料）</td><td>不適用</td></tr>
+        </table>
+    </div>
+
+    <!-- 简体中文 -->
+    <div class="lang-section" id="lang-hans">
+        <h2>1. 系统架构</h2>
+        <p>HKTranApp 采用四层架构，各层职责分明：</p>
+        <table>
+            <tr><th>层级</th><th>职责</th><th>关键组件</th></tr>
+            <tr><td><span class="layer-tag layer-view">视图层</span></td><td>UI 渲染、用户交互、导航</td><td>DashboardView, SearchView, StopBrowserView</td></tr>
+            <tr><td><span class="layer-tag layer-service">服务层</span></td><td>业务逻辑、ETA 协调、搜索</td><td>ETARefreshEngine, RouteSearchEngine, NetworkMonitor</td></tr>
+            <tr><td><span class="layer-tag layer-adapter">转接器层</span></td><td>各交通机构 API 通讯及数据标准化</td><td>MTRAdapter, KMBAdapter, CitybusAdapter, FerryAdapter</td></tr>
+            <tr><td><span class="layer-tag layer-data">数据层</span></td><td>持久化存储及内存模型</td><td>SwiftData Entities, Canonical Models</td></tr>
+        </table>
+
+        <h2>2. 技术栈</h2>
+        <table>
+            <tr><th>项目</th><th>技术</th></tr>
+            <tr><td>语言</td><td>Swift 5.9+</td></tr>
+            <tr><td>UI 框架</td><td>SwiftUI</td></tr>
+            <tr><td>持久化</td><td>SwiftData</td></tr>
+            <tr><td>网络</td><td>URLSession + NWPathMonitor</td></tr>
+            <tr><td>并发</td><td>Swift Concurrency（async/await, TaskGroup）</td></tr>
+            <tr><td>第三方依赖</td><td>无（零第三方包）</td></tr>
+        </table>
+
+        <h2>3. 数据模型</h2>
+        <h3>3.1 SwiftData 持久化实体</h3>
+        <table>
+            <tr><th>实体</th><th>用途</th><th>关键字段</th></tr>
+            <tr><td><code>SavedCombinationEntity</code></td><td>已收藏的路线+车站组合</td><td>operatorType, routeNumber, rawStopId, groupID, cachedETAMinutes</td></tr>
+            <tr><td><code>WatchListGroup</code></td><td>收藏清单分组</td><td>name, sortOrder（最多 5 个）</td></tr>
+            <tr><td><code>RouteIndexEntry</code></td><td>本地路线搜索索引</td><td>routeNumber, originTC, destinationTC, searchableText, direction</td></tr>
+            <tr><td><code>RouteIndexMeta</code></td><td>索引下载状态</td><td>lastDownloadedAt, version, entryCount</td></tr>
+        </table>
+
+        <h3>3.2 标准化内存模型</h3>
+        <table>
+            <tr><th>模型</th><th>用途</th></tr>
+            <tr><td><code>CanonicalRoute</code></td><td>统一路线表示（跨交通工具）</td></tr>
+            <tr><td><code>CanonicalStop</code></td><td>统一车站表示</td></tr>
+            <tr><td><code>UnifiedETA</code></td><td>统一 ETA 表示（分钟、时间、月台、是否实时）</td></tr>
+            <tr><td><code>RowETAState</code></td><td>7 态 UI 状态机</td></tr>
+        </table>
+
+        <h2>4. 转接器层设计</h2>
+        <p>每个交通机构的 API 格式各异，<code>OperatorAdapter</code> 协议将它们统一为标准模型。</p>
+        <h3>4.1 各转接器比较</h3>
+        <table>
+            <tr><th>项目</th><th>MTR</th><th>KMB</th><th>Citybus</th><th>Ferry</th></tr>
+            <tr><td>API 来源</td><td>rt.data.gov.hk</td><td>data.etabus.gov.hk</td><td>rt.data.gov.hk</td><td>静态时间表</td></tr>
+            <tr><td>速率限制</td><td>无</td><td>500ms</td><td>无</td><td>不适用</td></tr>
+            <tr><td>方向值</td><td>UP/DOWN</td><td>O/I</td><td>O/I</td><td>静态</td></tr>
+            <tr><td>月台信息</td><td>✓</td><td>✗</td><td>✗</td><td>✗</td></tr>
+            <tr><td>实时数据</td><td>✓</td><td>✓</td><td>✓</td><td>✗（固定班次）</td></tr>
+        </table>
+
+        <h3>4.2 KMB 速率限制器</h3>
+        <p>使用 Swift Actor 实现的 <code>KMBRateLimiter</code>，确保每次请求间隔不少于 500ms。多个组合共享同一车站时，会合并为单一 API 调用。</p>
+
+        <h2>5. 服务层设计</h2>
+        <h3>5.1 ETA 刷新引擎（ETARefreshEngine）</h3>
+        <table>
+            <tr><th>参数</th><th>值</th></tr>
+            <tr><td>自动刷新间隔</td><td>30 秒</td></tr>
+            <tr><td>API 超时</td><td>10 秒</td></tr>
+            <tr><td>MTR/CTB 并发</td><td>完全并行</td></tr>
+            <tr><td>KMB 并发</td><td>按 stopId 批次（500ms 间隔）</td></tr>
+            <tr><td>离线行为</td><td>跳过刷新，保留缓存</td></tr>
+        </table>
+
+        <h3>5.2 网络监控（NetworkMonitor）</h3>
+        <ul>
+            <li>基于 <code>NWPathMonitor</code> 的单例</li>
+            <li>状态：上线（online）、离线（offline）、未知（unknown）</li>
+            <li>网络恢复时自动触发 ETA 刷新</li>
+        </ul>
+
+        <h3>5.3 路线搜索引擎（RouteSearchEngine）</h3>
+        <ul>
+            <li>从 SwiftData 加载所有 RouteIndexEntry（~800-900 条）</li>
+            <li>内存内筛选：路线号码 → 前缀 → 关键字</li>
+            <li>排序：交通工具优先级 → 精确匹配 → 前缀匹配</li>
+            <li>搜索记录：UserDefaults，最多 10 条</li>
+        </ul>
+
+        <h2>6. ETA 状态机</h2>
+        <table>
+            <tr><th>状态</th><th>触发条件</th><th>视觉效果</th></tr>
+            <tr><td>正常（Fresh）</td><td>缓存 &lt; 90 秒</td><td>正常透明度</td></tr>
+            <tr><td>稍旧（Stale）</td><td>90 秒 – 5 分钟</td><td>80% 透明度，琥珀时钟</td></tr>
+            <tr><td>离线（Offline）</td><td>5–30 分钟或无网络</td><td>60% 透明度，离线图标</td></tr>
+            <tr><td>错误（Error）</td><td>&gt; 30 分钟或 API 失败</td><td>红色三角形</td></tr>
+            <tr><td>暂停服务</td><td>API 回传空数组</td><td>月亮图标 +「暂停服务」</td></tr>
+            <tr><td>受限（Degraded）</td><td>ETA &gt; 120 分钟</td><td>「点击查看站名」</td></tr>
+            <tr><td>加载中</td><td>首次加载，无缓存</td><td>加载动画</td></tr>
+        </table>
+
+        <h2>7. 离线与错误处理</h2>
+        <ul>
+            <li><strong>API 失败不清除缓存：</strong>用户始终看到最后已知数据</li>
+            <li><strong>逐个交通工具隔离：</strong>KMB 故障不影响 MTR/CTB 数据</li>
+            <li><strong>离线模式：</strong>显示缓存资料 + 离线提示横幅</li>
+            <li><strong>网络恢复：</strong>自动触发实时刷新</li>
+            <li><strong>首次启动离线：</strong>显示专用恢复页面 + 重试按钮</li>
+        </ul>
+
+        <h2>8. 安全性</h2>
+        <table>
+            <tr><th>项目</th><th>状态</th></tr>
+            <tr><td>API 认证</td><td>无需（全部使用公开开放数据 API）</td></tr>
+            <tr><td>传输安全</td><td>仅使用 HTTPS</td></tr>
+            <tr><td>个人资料收集</td><td>无</td></tr>
+            <tr><td>位置追踪</td><td>无</td></tr>
+            <tr><td>广告 / 追踪 SDK</td><td>无</td></tr>
+            <tr><td>数据存储</td><td>全部存储在装置本地</td></tr>
+            <tr><td>App Transport Security</td><td>启用（系统预设）</td></tr>
+        </table>
+
+        <h2>9. 性能设计</h2>
+        <table>
+            <tr><th>指标</th><th>目标</th></tr>
+            <tr><td>12 个组合刷新时间</td><td>&lt; 2 秒</td></tr>
+            <tr><td>首个 ETA 回应</td><td>&lt; 200ms（渐进更新）</td></tr>
+            <tr><td>路线索引大小</td><td>~463KB（~800-900 条记录）</td></tr>
+            <tr><td>搜索结果上限</td><td>50 条</td></tr>
+            <tr><td>每卡片显示 ETA</td><td>最多 3 个</td></tr>
+            <tr><td>站点 ETA 预览</td><td>首 10 个站</td></tr>
+        </table>
+
+        <h2>10. 数据来源</h2>
+        <table>
+            <tr><th>交通工具</th><th>API</th><th>认证</th></tr>
+            <tr><td>港铁 MTR</td><td>rt.data.gov.hk（getSchedule.php）</td><td>无</td></tr>
+            <tr><td>九巴 KMB</td><td>data.etabus.gov.hk</td><td>无</td></tr>
+            <tr><td>城巴 Citybus</td><td>rt.data.gov.hk（CTB ETA API v2）</td><td>无</td></tr>
+            <tr><td>渡轮 Ferry</td><td>静态时间表（运输署公开资料）</td><td>不适用</td></tr>
+        </table>
+    </div>
+
+    <!-- English -->
+    <div class="lang-section" id="lang-en">
+        <h2>1. System Architecture</h2>
+        <p>HKTranApp uses a four-layer architecture with clear separation of concerns:</p>
+        <table>
+            <tr><th>Layer</th><th>Responsibility</th><th>Key Components</th></tr>
+            <tr><td><span class="layer-tag layer-view">View</span></td><td>UI rendering, user interaction, navigation</td><td>DashboardView, SearchView, StopBrowserView</td></tr>
+            <tr><td><span class="layer-tag layer-service">Service</span></td><td>Business logic, ETA orchestration, search</td><td>ETARefreshEngine, RouteSearchEngine, NetworkMonitor</td></tr>
+            <tr><td><span class="layer-tag layer-adapter">Adapter</span></td><td>Operator-specific API communication & normalization</td><td>MTRAdapter, KMBAdapter, CitybusAdapter, FerryAdapter</td></tr>
+            <tr><td><span class="layer-tag layer-data">Data</span></td><td>Persistent storage & in-memory models</td><td>SwiftData Entities, Canonical Models</td></tr>
+        </table>
+
+        <h2>2. Technology Stack</h2>
+        <table>
+            <tr><th>Category</th><th>Technology</th></tr>
+            <tr><td>Language</td><td>Swift 5.9+</td></tr>
+            <tr><td>UI Framework</td><td>SwiftUI</td></tr>
+            <tr><td>Persistence</td><td>SwiftData</td></tr>
+            <tr><td>Networking</td><td>URLSession + NWPathMonitor</td></tr>
+            <tr><td>Concurrency</td><td>Swift Concurrency (async/await, TaskGroup)</td></tr>
+            <tr><td>Third-Party Dependencies</td><td>None (zero third-party packages)</td></tr>
+        </table>
+
+        <h2>3. Data Models</h2>
+        <h3>3.1 SwiftData Persistent Entities</h3>
+        <table>
+            <tr><th>Entity</th><th>Purpose</th><th>Key Fields</th></tr>
+            <tr><td><code>SavedCombinationEntity</code></td><td>Saved route+stop combination</td><td>operatorType, routeNumber, rawStopId, groupID, cachedETAMinutes</td></tr>
+            <tr><td><code>WatchListGroup</code></td><td>Watch list group</td><td>name, sortOrder (max 5)</td></tr>
+            <tr><td><code>RouteIndexEntry</code></td><td>Local route search index</td><td>routeNumber, originTC, destinationTC, searchableText, direction</td></tr>
+            <tr><td><code>RouteIndexMeta</code></td><td>Index download state</td><td>lastDownloadedAt, version, entryCount</td></tr>
+        </table>
+
+        <h3>3.2 Canonical In-Memory Models</h3>
+        <table>
+            <tr><th>Model</th><th>Purpose</th></tr>
+            <tr><td><code>CanonicalRoute</code></td><td>Unified route representation (cross-operator)</td></tr>
+            <tr><td><code>CanonicalStop</code></td><td>Unified stop representation</td></tr>
+            <tr><td><code>UnifiedETA</code></td><td>Unified ETA (minutes, time, platform, isLive)</td></tr>
+            <tr><td><code>RowETAState</code></td><td>7-state UI state machine</td></tr>
+        </table>
+
+        <h2>4. Adapter Layer Design</h2>
+        <p>Each transport operator has a different API format. The <code>OperatorAdapter</code> protocol normalizes them into canonical models.</p>
+        <h3>4.1 Adapter Comparison</h3>
+        <table>
+            <tr><th>Aspect</th><th>MTR</th><th>KMB</th><th>Citybus</th><th>Ferry</th></tr>
+            <tr><td>API Source</td><td>rt.data.gov.hk</td><td>data.etabus.gov.hk</td><td>rt.data.gov.hk</td><td>Static timetables</td></tr>
+            <tr><td>Rate Limit</td><td>None</td><td>500ms</td><td>None</td><td>N/A</td></tr>
+            <tr><td>Direction Values</td><td>UP/DOWN</td><td>O/I</td><td>O/I</td><td>Static</td></tr>
+            <tr><td>Platform Info</td><td>✓</td><td>✗</td><td>✗</td><td>✗</td></tr>
+            <tr><td>Real-time Data</td><td>✓</td><td>✓</td><td>✓</td><td>✗ (fixed schedule)</td></tr>
+        </table>
+
+        <h3>4.2 KMB Rate Limiter</h3>
+        <p>Implemented as a Swift Actor (<code>KMBRateLimiter</code>), ensuring ≥500ms between API requests. Multiple combinations sharing the same stop are batched into a single API call.</p>
+
+        <h2>5. Service Layer Design</h2>
+        <h3>5.1 ETA Refresh Engine</h3>
+        <table>
+            <tr><th>Parameter</th><th>Value</th></tr>
+            <tr><td>Auto-refresh interval</td><td>30 seconds</td></tr>
+            <tr><td>API timeout</td><td>10 seconds</td></tr>
+            <tr><td>MTR/CTB concurrency</td><td>Full parallel</td></tr>
+            <tr><td>KMB concurrency</td><td>Batched by stopId (500ms spacing)</td></tr>
+            <tr><td>Offline behavior</td><td>Skip refresh, preserve cache</td></tr>
+        </table>
+
+        <h3>5.2 Network Monitor</h3>
+        <ul>
+            <li>Singleton based on <code>NWPathMonitor</code></li>
+            <li>States: online, offline, unknown</li>
+            <li>Auto-triggers ETA refresh on network restore</li>
+        </ul>
+
+        <h3>5.3 Route Search Engine</h3>
+        <ul>
+            <li>Loads all RouteIndexEntry records from SwiftData (~800-900 entries)</li>
+            <li>In-memory filtering: route number → prefix → keyword</li>
+            <li>Sorting: operator priority → exact match → prefix match</li>
+            <li>Search history: UserDefaults, max 10 items</li>
+        </ul>
+
+        <h2>6. ETA State Machine</h2>
+        <table>
+            <tr><th>State</th><th>Condition</th><th>Visual</th></tr>
+            <tr><td>Fresh</td><td>Cache &lt; 90s</td><td>Full opacity</td></tr>
+            <tr><td>Stale</td><td>90s – 5min</td><td>80% opacity, amber clock</td></tr>
+            <tr><td>Offline</td><td>5–30min or no network</td><td>60% opacity, offline icon</td></tr>
+            <tr><td>Error</td><td>&gt; 30min or API failure</td><td>Red triangle</td></tr>
+            <tr><td>No Service</td><td>API returns empty array</td><td>Moon icon + "No Service"</td></tr>
+            <tr><td>Degraded</td><td>ETA &gt; 120min</td><td>"Tap to view stop name"</td></tr>
+            <tr><td>Loading</td><td>First load, no cache</td><td>Spinner</td></tr>
+        </table>
+
+        <h2>7. Offline & Error Handling</h2>
+        <ul>
+            <li><strong>API failures never clear cache:</strong> Users always see last known data</li>
+            <li><strong>Per-operator isolation:</strong> KMB outage doesn't affect MTR/CTB data</li>
+            <li><strong>Offline mode:</strong> Cached data + offline banner indicator</li>
+            <li><strong>Network restore:</strong> Auto-triggers immediate refresh</li>
+            <li><strong>First launch offline:</strong> Dedicated recovery view + retry button</li>
+        </ul>
+
+        <h2>8. Security</h2>
+        <table>
+            <tr><th>Aspect</th><th>Status</th></tr>
+            <tr><td>API Authentication</td><td>None required (all public open-data APIs)</td></tr>
+            <tr><td>Transport Security</td><td>HTTPS only</td></tr>
+            <tr><td>Personal Data Collection</td><td>None</td></tr>
+            <tr><td>Location Tracking</td><td>None</td></tr>
+            <tr><td>Ads / Tracking SDKs</td><td>None</td></tr>
+            <tr><td>Data Storage</td><td>All stored locally on device</td></tr>
+            <tr><td>App Transport Security</td><td>Enabled (system default)</td></tr>
+        </table>
+
+        <h2>9. Performance</h2>
+        <table>
+            <tr><th>Metric</th><th>Target</th></tr>
+            <tr><td>12 combinations refresh time</td><td>&lt; 2 seconds</td></tr>
+            <tr><td>First ETA response</td><td>&lt; 200ms (incremental updates)</td></tr>
+            <tr><td>Route index size</td><td>~463KB (~800-900 entries)</td></tr>
+            <tr><td>Search results limit</td><td>50 entries</td></tr>
+            <tr><td>ETAs per card</td><td>Max 3</td></tr>
+            <tr><td>Stop ETA preview</td><td>First 10 stops</td></tr>
+        </table>
+
+        <h2>10. Data Sources</h2>
+        <table>
+            <tr><th>Transport</th><th>API</th><th>Auth</th></tr>
+            <tr><td>MTR</td><td>rt.data.gov.hk (getSchedule.php)</td><td>None</td></tr>
+            <tr><td>KMB</td><td>data.etabus.gov.hk</td><td>None</td></tr>
+            <tr><td>Citybus</td><td>rt.data.gov.hk (CTB ETA API v2)</td><td>None</td></tr>
+            <tr><td>Ferry</td><td>Static timetables (Transport Department)</td><td>N/A</td></tr>
+        </table>
+    </div>
+</div>
+
+<script>
+function showLang(lang, event) {
+    event.preventDefault();
+    document.querySelectorAll('.lang-section').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.lang-tabs a').forEach(el => el.classList.remove('active'));
+    document.getElementById('lang-' + lang).classList.add('active');
+    event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
