@@ -1,1 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>路線App HKTranApp — 支援 Support</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+            line-height: 1.7;
+            color: #1a1a1a;
+            background: #f5f5f7;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .header img {
+            width: 80px;
+            height: 80px;
+            border-radius: 18px;
+            margin-bottom: 12px;
+        }
+        .header h1 {
+            font-size: 1.6em;
+            color: #1a1a1a;
+        }
+        .header p {
+            color: #86868b;
+            font-size: 0.9em;
+            margin-top: 4px;
+        }
+        .lang-tabs {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .lang-tabs a {
+            padding: 6px 16px;
+            border-radius: 20px;
+            background: #e8e8ed;
+            color: #1a1a1a;
+            text-decoration: none;
+            font-size: 0.85em;
+            transition: background 0.2s;
+        }
+        .lang-tabs a:hover, .lang-tabs a.active {
+            background: #007aff;
+            color: #fff;
+        }
+        .lang-section { display: none; }
+        .lang-section.active { display: block; }
+        h2 {
+            font-size: 1.2em;
+            margin-top: 24px;
+            margin-bottom: 8px;
+            color: #1d1d1f;
+        }
+        p, li { margin-bottom: 8px; color: #424245; }
+        ul { padding-left: 20px; margin-bottom: 12px; }
+        .faq-item {
+            margin-bottom: 16px;
+            padding: 16px;
+            background: #f5f5f7;
+            border-radius: 12px;
+        }
+        .faq-item h3 {
+            font-size: 1em;
+            margin-bottom: 6px;
+            color: #1d1d1f;
+        }
+        .faq-item p {
+            font-size: 0.9em;
+            color: #6e6e73;
+        }
+        .contact-box {
+            text-align: center;
+            margin-top: 24px;
+            padding: 20px;
+            background: #f5f5f7;
+            border-radius: 12px;
+        }
+        .contact-box a {
+            color: #007aff;
+            font-size: 1.1em;
+            text-decoration: none;
+        }
+        a { color: #007aff; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <img src="icon.png" alt="路線App HKTranApp">
+        <h1>路線App / HKTranApp</h1>
+        <p>支援 · Support · 支持</p>
+    </div>
 
+    <div class="lang-tabs">
+        <a href="#" class="active" onclick="showLang('hant', event)">繁體中文</a>
+        <a href="#" onclick="showLang('hans', event)">简体中文</a>
+        <a href="#" onclick="showLang('en', event)">English</a>
+    </div>
+
+    <!-- 繁體中文 -->
+    <div class="lang-section active" id="lang-hant">
+        <h2>關於路線App</h2>
+        <p>「路線App」是一款提供香港公共交通實時資訊的iOS應用程式，支援九巴、城巴、港鐵及渡輪的即時到站時間查詢。</p>
+
+        <h2>常見問題</h2>
+
+        <div class="faq-item">
+            <h3>Q: 點解搜尋唔到某條路線？</h3>
+            <p>A: 請嘗試輸入路線號碼（如「87D」）或起訖站名稱進行搜尋。如果仍然找不到，可能是該路線暫時不在資料庫中。</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>Q: 點解有時ETA顯示「班次」？</h3>
+            <p>A: 當預計到站時間超過120分鐘，或未有實時數據時，會顯示為「班次」。</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>Q: 收藏嘅路線會唔會同步到其他裝置？</h3>
+            <p>A: 收藏資料僅儲存在您的裝置本地，不會同步至雲端。解除安裝應用程式後資料將被清除。</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>Q: 點解某些路線只有一個方向？</h3>
+            <p>A: 部分路線的回程數據可能未由公共交通機構提供。我們只會顯示有數據的方向。</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>Q: 支援哪些iOS版本？</h3>
+            <p>A: 本應用程式需要 iOS 16.0 或以上版本。</p>
+        </div>
+
+        <h2>數據來源</h2>
+        <ul>
+            <li>九巴 KMB — data.etabus.gov.hk</li>
+            <li>城巴 Citybus — rt.data.gov.hk</li>
+            <li>港鐵 MTR — MTR Next Train API</li>
+            <li>渡輪 Ferry — 運輸署公開資料</li>
+        </ul>
+
+        <div class="contact-box">
+            <p>如需進一步協助，請聯絡我們：</p>
+            <a href="mailto:cyrus903@users.noreply.github.com">cyrus903@users.noreply.github.com</a>
+        </div>
+    </div>
+
+    <!-- 简体中文 -->
+    <div class="lang-section" id="lang-hans">
+        <h2>关于路线App</h2>
+        <p>「路线App」是一款提供香港公共交通实时信息的iOS应用程序，支援九巴、城巴、港铁及渡轮的实时到站时间查询。</p>
+
+        <h2>常见问题</h2>
+
+        <div class="faq-item">
+            <h3>Q: 为什么搜索不到某条路线？</h3>
+            <p>A: 请尝试输入路线号码（如「87D」）或起讫站名称进行搜索。如果仍然找不到，可能是该路线暂时不在数据库中。</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>Q: 为什么有时ETA显示「班次」？</h3>
+            <p>A: 当预计到站时间超过120分钟，或没有实时数据时，会显示为「班次」。</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>Q: 收藏的路线会不会同步到其他设备？</h3>
+            <p>A: 收藏数据仅存储在您的设备本地，不会同步至云端。卸载应用程序后数据将被清除。</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>Q: 为什么某些路线只有一个方向？</h3>
+            <p>A: 部分路线的回程数据可能未由公共交通机构提供。我们只会显示有数据的方向。</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>Q: 支持哪些iOS版本？</h3>
+            <p>A: 本应用程序需要 iOS 16.0 或以上版本。</p>
+        </div>
+
+        <h2>数据来源</h2>
+        <ul>
+            <li>九巴 KMB — data.etabus.gov.hk</li>
+            <li>城巴 Citybus — rt.data.gov.hk</li>
+            <li>港铁 MTR — MTR Next Train API</li>
+            <li>渡轮 Ferry — 运输署公开资料</li>
+        </ul>
+
+        <div class="contact-box">
+            <p>如需进一步协助，请联系我们：</p>
+            <a href="mailto:cyrus903@users.noreply.github.com">cyrus903@users.noreply.github.com</a>
+        </div>
+    </div>
+
+    <!-- English -->
+    <div class="lang-section" id="lang-en">
+        <h2>About HKTranApp</h2>
+        <p>"HKTranApp" is an iOS application that provides real-time public transport information for Hong Kong, supporting KMB, Citybus, MTR, and Ferry arrival time queries.</p>
+
+        <h2>Frequently Asked Questions</h2>
+
+        <div class="faq-item">
+            <h3>Q: Why can't I find a certain route?</h3>
+            <p>A: Try searching by route number (e.g., "87D") or origin/destination name. If it still cannot be found, the route may not be in our database yet.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>Q: Why does the ETA sometimes show "Scheduled"?</h3>
+            <p>A: When the estimated arrival time exceeds 120 minutes or no real-time data is available, it will display as "Scheduled".</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>Q: Will my saved routes sync to other devices?</h3>
+            <p>A: Saved data is stored locally on your device only and does not sync to the cloud. Uninstalling the app will remove all data.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>Q: Why do some routes only show one direction?</h3>
+            <p>A: Return direction data may not be provided by the transport operator for certain routes. We only display directions that have available data.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>Q: What iOS versions are supported?</h3>
+            <p>A: This application requires iOS 16.0 or later.</p>
+        </div>
+
+        <h2>Data Sources</h2>
+        <ul>
+            <li>KMB — data.etabus.gov.hk</li>
+            <li>Citybus — rt.data.gov.hk</li>
+            <li>MTR — MTR Next Train API</li>
+            <li>Ferry — Transport Department Open Data</li>
+        </ul>
+
+        <div class="contact-box">
+            <p>For further assistance, please contact us:</p>
+            <a href="mailto:cyrus903@users.noreply.github.com">cyrus903@users.noreply.github.com</a>
+        </div>
+    </div>
+</div>
+
+<script>
+function showLang(lang, event) {
+    event.preventDefault();
+    document.querySelectorAll('.lang-section').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.lang-tabs a').forEach(el => el.classList.remove('active'));
+    document.getElementById('lang-' + lang).classList.add('active');
+    event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
