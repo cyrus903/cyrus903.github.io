@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>路線App HKTranApp — 用戶需求規格 URS</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+            line-height: 1.7;
+            color: #1a1a1a;
+            background: #f5f5f7;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .header img {
+            width: 80px;
+            height: 80px;
+            border-radius: 18px;
+            margin-bottom: 12px;
+        }
+        .header h1 {
+            font-size: 1.6em;
+            color: #1a1a1a;
+        }
+        .header p {
+            color: #86868b;
+            font-size: 0.9em;
+            margin-top: 4px;
+        }
+        .lang-tabs {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .lang-tabs a {
+            padding: 6px 16px;
+            border-radius: 20px;
+            background: #e8e8ed;
+            color: #1a1a1a;
+            text-decoration: none;
+            font-size: 0.85em;
+            transition: background 0.2s;
+        }
+        .lang-tabs a:hover, .lang-tabs a.active {
+            background: #007aff;
+            color: #fff;
+        }
+        .lang-section { display: none; }
+        .lang-section.active { display: block; }
+        h2 {
+            font-size: 1.25em;
+            margin-top: 28px;
+            margin-bottom: 10px;
+            color: #1d1d1f;
+            padding-bottom: 4px;
+            border-bottom: 2px solid #e8e8ed;
+        }
+        h3 {
+            font-size: 1.05em;
+            margin-top: 18px;
+            margin-bottom: 6px;
+            color: #1d1d1f;
+        }
+        p, li { margin-bottom: 8px; color: #424245; }
+        ul, ol { padding-left: 20px; margin-bottom: 12px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 0.9em;
+        }
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background: #f5f5f7;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+        .req-id {
+            font-family: "SF Mono", monospace;
+            font-size: 0.85em;
+            color: #007aff;
+            font-weight: 600;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+        .badge-must { background: #ffe0e0; color: #c62828; }
+        .badge-should { background: #fff3e0; color: #ef6c00; }
+        .badge-nice { background: #e8f5e9; color: #2e7d32; }
+        a { color: #007aff; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <img src="icon.png" alt="路線App HKTranApp">
+        <h1>路線App / HKTranApp</h1>
+        <p>用戶需求規格 · User Requirement Specification · 用户需求规格</p>
+    </div>
+
+    <div class="lang-tabs">
+        <a href="#" class="active" onclick="showLang('hant', event)">繁體中文</a>
+        <a href="#" onclick="showLang('hans', event)">简体中文</a>
+        <a href="#" onclick="showLang('en', event)">English</a>
+    </div>
+
+    <!-- 繁體中文 -->
+    <div class="lang-section active" id="lang-hant">
+        <h2>1. 簡介</h2>
+        <p>「路線App」（HKTranApp）是一款 iOS 應用程式，為香港市民及訪港旅客提供公共交通工具的即時到站資訊，涵蓋巴士、港鐵及渡輪。</p>
+
+        <h2>2. 目標用戶</h2>
+        <ul>
+            <li>日常通勤的香港市民</li>
+            <li>需要即時掌握交通工具到站時間的用戶</li>
+            <li>訪港旅客</li>
+        </ul>
+
+        <h2>3. 功能需求</h2>
+
+        <h3>3.1 即時到站資訊（ETA）</h3>
+        <table>
+            <tr><th>編號</th><th>需求</th><th>優先級</th></tr>
+            <tr><td class="req-id">FR-001</td><td>顯示九巴（KMB）即時到站時間</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">FR-002</td><td>顯示城巴（Citybus）即時到站時間</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">FR-003</td><td>顯示港鐵（MTR）即時班次及月台資訊</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">FR-004</td><td>顯示渡輪航班時間表</td><td><span class="badge badge-should">應該</span></td></tr>
+            <tr><td class="req-id">FR-005</td><td>每 30 秒自動刷新 ETA</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">FR-006</td><td>顯示特別班次路線（如加班車、特別線）</td><td><span class="badge badge-nice">可選</span></td></tr>
+        </table>
+
+        <h3>3.2 路線搜尋</h3>
+        <table>
+            <tr><th>編號</th><th>需求</th><th>優先級</th></tr>
+            <tr><td class="req-id">FR-010</td><td>按路線號碼搜尋（如「87D」）</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">FR-011</td><td>按車站名稱或目的地搜尋</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">FR-012</td><td>支援繁體中文、簡體中文及英文搜尋</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">FR-013</td><td>顯示最近搜尋記錄</td><td><span class="badge badge-should">應該</span></td></tr>
+            <tr><td class="req-id">FR-014</td><td>離線状态下可搜尋已下載的路線索引</td><td><span class="badge badge-must">必須</span></td></tr>
+        </table>
+
+        <h3>3.3 收藏與個人化</h3>
+        <table>
+            <tr><th>編號</th><th>需求</th><th>優先級</th></tr>
+            <tr><td class="req-id">FR-020</td><td>用戶可收藏路線及車站組合</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">FR-021</td><td>支援多個收藏清單分組（最多 5 個，如「上班」「放假」）</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">FR-022</td><td>每個分組最多儲存 10 個路線卡片</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">FR-023</td><td>可重新命名、刪除及重新排序分組</td><td><span class="badge badge-should">應該</span></td></tr>
+            <tr><td class="req-id">FR-024</td><td>重複收藏時提示用戶</td><td><span class="badge badge-must">必須</span></td></tr>
+        </table>
+
+        <h3>3.4 站點瀏覽</h3>
+        <table>
+            <tr><th>編號</th><th>需求</th><th>優先級</th></tr>
+            <tr><td class="req-id">FR-030</td><td>顯示所選路線的全部站點列表</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">FR-031</td><td>支援切換去程／回程方向</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">FR-032</td><td>僅顯示有站點數據的方向</td><td><span class="badge badge-should">應該</span></td></tr>
+            <tr><td class="req-id">FR-033</td><td>每個站點顯示即時 ETA 預覽</td><td><span class="badge badge-should">應該</span></td></tr>
+        </table>
+
+        <h3>3.5 離線與網絡</h3>
+        <table>
+            <tr><th>編號</th><th>需求</th><th>優先級</th></tr>
+            <tr><td class="req-id">FR-040</td><td>首次啟動需網絡下載路線索引</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">FR-041</td><td>離線時顯示最近快取的 ETA 資料</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">FR-042</td><td>離線時顯示離線模式提示</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">FR-043</td><td>網絡恢復後自動恢復即時更新</td><td><span class="badge badge-must">必須</span></td></tr>
+        </table>
+
+        <h3>3.6 使用者介面</h3>
+        <table>
+            <tr><th>編號</th><th>需求</th><th>優先級</th></tr>
+            <tr><td class="req-id">FR-049</td><td>首次啟動顯示歡迎頁面</td><td><span class="badge badge-should">應該</span></td></tr>
+            <tr><td class="req-id">FR-050</td><td>支援淺色及深色模式</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">FR-051</td><td>支援直向及橫向螢幕</td><td><span class="badge badge-should">應該</span></td></tr>
+            <tr><td class="req-id">FR-052</td><td>提供三語介面（繁中、簡中、英文）</td><td><span class="badge badge-must">必須</span></td></tr>
+        </table>
+
+        <h2>4. ETA 狀態顯示</h2>
+        <p>每張路線卡片根據資料新鮮度及網絡狀態，顯示不同視覺狀態：</p>
+        <table>
+            <tr><th>狀態</th><th>條件</th><th>顯示</th></tr>
+            <tr><td>正常</td><td>快取 &lt; 90 秒</td><td>正常透明度</td></tr>
+            <tr><td>稍舊</td><td>快取 90 秒 – 5 分鐘</td><td>80% 透明度，琥珀色時鐘</td></tr>
+            <tr><td>離線</td><td>快取 5–30 分鐘或無網絡</td><td>60% 透明度，離線圖示</td></tr>
+            <tr><td>錯誤</td><td>快取 &gt; 30 分鐘或 API 失敗</td><td>紅色三角圖示</td></tr>
+            <tr><td>暫停服務</td><td>API 回傳空陣列</td><td>「暫停服務」+ 月亮圖示</td></tr>
+            <tr><td>受限</td><td>ETA &gt; 120 分鐘</td><td>「點擊查看站名」</td></tr>
+            <tr><td>載入中</td><td>首次載入，無快取</td><td>載入動畫</td></tr>
+        </table>
+
+        <h2>5. 非功能需求</h2>
+        <table>
+            <tr><th>編號</th><th>需求</th><th>優先級</th></tr>
+            <tr><td class="req-id">NFR-001</td><td>支援 iOS 16.0 或以上</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">NFR-002</td><td>無需註冊或登入即可使用</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">NFR-003</td><td>不收集用戶個人資料</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">NFR-004</td><td>不包含廣告</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">NFR-005</td><td>無第三方追蹤 SDK</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">NFR-006</td><td>ETA API 請求超時設定為 10 秒</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">NFR-007</td><td>KMB API 請求間隔不少於 500ms（速率限制）</td><td><span class="badge badge-must">必須</span></td></tr>
+            <tr><td class="req-id">NFR-008</td><td>所有資料儲存在裝置本地，不上傳伺服器</td><td><span class="badge badge-must">必須</span></td></tr>
+        </table>
+
+        <h2>6. 數據來源</h2>
+        <table>
+            <tr><th>交通工具</th><th>API 來源</th></tr>
+            <tr><td>九巴 KMB</td><td>data.etabus.gov.hk</td></tr>
+            <tr><td>城巴 Citybus</td><td>rt.data.gov.hk（CTB ETA API）</td></tr>
+            <tr><td>港鐵 MTR</td><td>rt.data.gov.hk（Next Train API）</td></tr>
+            <tr><td>渡輪 Ferry</td><td>運輸署公開資料（靜態時間表）</td></tr>
+        </table>
+    </div>
+
+    <!-- 简体中文 -->
+    <div class="lang-section" id="lang-hans">
+        <h2>1. 简介</h2>
+        <p>「路线App」（HKTranApp）是一款 iOS 应用程序，为香港市民及访港旅客提供公共交通工具的实时到站信息，涵盖巴士、港铁及渡轮。</p>
+
+        <h2>2. 目标用户</h2>
+        <ul>
+            <li>日常通勤的香港市民</li>
+            <li>需要实时掌握交通工具到站时间的用户</li>
+            <li>访港旅客</li>
+        </ul>
+
+        <h2>3. 功能需求</h2>
+
+        <h3>3.1 实时到站信息（ETA）</h3>
+        <table>
+            <tr><th>编号</th><th>需求</th><th>优先级</th></tr>
+            <tr><td class="req-id">FR-001</td><td>显示九巴（KMB）实时到站时间</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">FR-002</td><td>显示城巴（Citybus）实时到站时间</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">FR-003</td><td>显示港铁（MTR）实时班次及月台信息</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">FR-004</td><td>显示渡轮航班时间表</td><td><span class="badge badge-should">应该</span></td></tr>
+            <tr><td class="req-id">FR-005</td><td>每 30 秒自动刷新 ETA</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">FR-006</td><td>显示特别班次路线（如加班车、特别线）</td><td><span class="badge badge-nice">可选</span></td></tr>
+        </table>
+
+        <h3>3.2 路线搜索</h3>
+        <table>
+            <tr><th>编号</th><th>需求</th><th>优先级</th></tr>
+            <tr><td class="req-id">FR-010</td><td>按路线号码搜索（如「87D」）</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">FR-011</td><td>按车站名称或目的地搜索</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">FR-012</td><td>支持繁体中文、简体中文及英文搜索</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">FR-013</td><td>显示最近搜索记录</td><td><span class="badge badge-should">应该</span></td></tr>
+            <tr><td class="req-id">FR-014</td><td>离线状态下可搜索已下载的路线索引</td><td><span class="badge badge-must">必须</span></td></tr>
+        </table>
+
+        <h3>3.3 收藏与个性化</h3>
+        <table>
+            <tr><th>编号</th><th>需求</th><th>优先级</th></tr>
+            <tr><td class="req-id">FR-020</td><td>用户可收藏路线及车站组合</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">FR-021</td><td>支持多个收藏清单分组（最多 5 个，如「上班」「放假」）</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">FR-022</td><td>每个分组最多储存 10 个路线卡片</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">FR-023</td><td>可重命名、删除及重新排序分组</td><td><span class="badge badge-should">应该</span></td></tr>
+            <tr><td class="req-id">FR-024</td><td>重复收藏时提示用户</td><td><span class="badge badge-must">必须</span></td></tr>
+        </table>
+
+        <h3>3.4 站点浏览</h3>
+        <table>
+            <tr><th>编号</th><th>需求</th><th>优先级</th></tr>
+            <tr><td class="req-id">FR-030</td><td>显示所选路线的全部站点列表</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">FR-031</td><td>支持切换去程／回程方向</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">FR-032</td><td>仅显示有站点数据的方向</td><td><span class="badge badge-should">应该</span></td></tr>
+            <tr><td class="req-id">FR-033</td><td>每个站点显示实时 ETA 预览</td><td><span class="badge badge-should">应该</span></td></tr>
+        </table>
+
+        <h3>3.5 离线与网络</h3>
+        <table>
+            <tr><th>编号</th><th>需求</th><th>优先级</th></tr>
+            <tr><td class="req-id">FR-040</td><td>首次启动需网络下载路线索引</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">FR-041</td><td>离线时显示最近缓存的 ETA 资料</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">FR-042</td><td>离线时显示离线模式提示</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">FR-043</td><td>网络恢复后自动恢复实时更新</td><td><span class="badge badge-must">必须</span></td></tr>
+        </table>
+
+        <h3>3.6 用户界面</h3>
+        <table>
+            <tr><th>编号</th><th>需求</th><th>优先级</th></tr>
+            <tr><td class="req-id">FR-049</td><td>首次启动显示欢迎页面</td><td><span class="badge badge-should">应该</span></td></tr>
+            <tr><td class="req-id">FR-050</td><td>支持浅色及深色模式</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">FR-051</td><td>支持直向及横向屏幕</td><td><span class="badge badge-should">应该</span></td></tr>
+            <tr><td class="req-id">FR-052</td><td>提供三语界面（繁中、简中、英文）</td><td><span class="badge badge-must">必须</span></td></tr>
+        </table>
+
+        <h2>4. ETA 状态显示</h2>
+        <p>每张路线卡片根据数据新鲜度及网络状态，显示不同视觉状态：</p>
+        <table>
+            <tr><th>状态</th><th>条件</th><th>显示</th></tr>
+            <tr><td>正常</td><td>缓存 &lt; 90 秒</td><td>正常透明度</td></tr>
+            <tr><td>稍旧</td><td>缓存 90 秒 – 5 分钟</td><td>80% 透明度，琥珀色时钟</td></tr>
+            <tr><td>离线</td><td>缓存 5–30 分钟或无网络</td><td>60% 透明度，离线图标</td></tr>
+            <tr><td>错误</td><td>缓存 &gt; 30 分钟或 API 失败</td><td>红色三角图标</td></tr>
+            <tr><td>暂停服务</td><td>API 回传空数组</td><td>「暂停服务」+ 月亮图标</td></tr>
+            <tr><td>受限</td><td>ETA &gt; 120 分钟</td><td>「点击查看站名」</td></tr>
+            <tr><td>加载中</td><td>首次加载，无缓存</td><td>加载动画</td></tr>
+        </table>
+
+        <h2>5. 非功能需求</h2>
+        <table>
+            <tr><th>编号</th><th>需求</th><th>优先级</th></tr>
+            <tr><td class="req-id">NFR-001</td><td>支持 iOS 16.0 或以上</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">NFR-002</td><td>无需注册或登录即可使用</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">NFR-003</td><td>不收集用户个人数据</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">NFR-004</td><td>不包含广告</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">NFR-005</td><td>无第三方追踪 SDK</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">NFR-006</td><td>ETA API 请求超时设定为 10 秒</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">NFR-007</td><td>KMB API 请求间隔不少于 500ms（速率限制）</td><td><span class="badge badge-must">必须</span></td></tr>
+            <tr><td class="req-id">NFR-008</td><td>所有数据储存在装置本地，不上传服务器</td><td><span class="badge badge-must">必须</span></td></tr>
+        </table>
+
+        <h2>6. 数据来源</h2>
+        <table>
+            <tr><th>交通工具</th><th>API 来源</th></tr>
+            <tr><td>九巴 KMB</td><td>data.etabus.gov.hk</td></tr>
+            <tr><td>城巴 Citybus</td><td>rt.data.gov.hk（CTB ETA API）</td></tr>
+            <tr><td>港铁 MTR</td><td>rt.data.gov.hk（Next Train API）</td></tr>
+            <tr><td>渡轮 Ferry</td><td>运输署公开资料（静态时间表）</td></tr>
+        </table>
+    </div>
+
+    <!-- English -->
+    <div class="lang-section" id="lang-en">
+        <h2>1. Introduction</h2>
+        <p>HKTranApp is an iOS application that provides real-time public transport arrival information for Hong Kong residents and visitors, covering buses, MTR, and ferries.</p>
+
+        <h2>2. Target Users</h2>
+        <ul>
+            <li>Daily commuters in Hong Kong</li>
+            <li>Users who need real-time transit arrival information</li>
+            <li>Tourists visiting Hong Kong</li>
+        </ul>
+
+        <h2>3. Functional Requirements</h2>
+
+        <h3>3.1 Real-time ETA</h3>
+        <table>
+            <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+            <tr><td class="req-id">FR-001</td><td>Display KMB real-time arrival times</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">FR-002</td><td>Display Citybus real-time arrival times</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">FR-003</td><td>Display MTR real-time schedules and platform info</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">FR-004</td><td>Display ferry schedules</td><td><span class="badge badge-should">Should</span></td></tr>
+            <tr><td class="req-id">FR-005</td><td>Auto-refresh ETA every 30 seconds</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">FR-006</td><td>Display special service routes (e.g. additional departures)</td><td><span class="badge badge-nice">Nice</span></td></tr>
+        </table>
+
+        <h3>3.2 Route Search</h3>
+        <table>
+            <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+            <tr><td class="req-id">FR-010</td><td>Search by route number (e.g. "87D")</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">FR-011</td><td>Search by stop name or destination</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">FR-012</td><td>Support Traditional Chinese, Simplified Chinese, and English search</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">FR-013</td><td>Show recent search history</td><td><span class="badge badge-should">Should</span></td></tr>
+            <tr><td class="req-id">FR-014</td><td>Offline search using downloaded route index</td><td><span class="badge badge-must">Must</span></td></tr>
+        </table>
+
+        <h3>3.3 Favorites & Personalization</h3>
+        <table>
+            <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+            <tr><td class="req-id">FR-020</td><td>Users can save route + stop combinations</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">FR-021</td><td>Support multiple watch list groups (max 5, e.g. "Work", "Weekend")</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">FR-022</td><td>Each group holds max 10 route cards</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">FR-023</td><td>Rename, delete, and reorder groups</td><td><span class="badge badge-should">Should</span></td></tr>
+            <tr><td class="req-id">FR-024</td><td>Prompt on duplicate saves</td><td><span class="badge badge-must">Must</span></td></tr>
+        </table>
+
+        <h3>3.4 Stop Browser</h3>
+        <table>
+            <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+            <tr><td class="req-id">FR-030</td><td>Display full stop list for selected route</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">FR-031</td><td>Support outbound/inbound direction switching</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">FR-032</td><td>Only show directions that have stop data</td><td><span class="badge badge-should">Should</span></td></tr>
+            <tr><td class="req-id">FR-033</td><td>Show real-time ETA preview per stop</td><td><span class="badge badge-should">Should</span></td></tr>
+        </table>
+
+        <h3>3.5 Offline & Network</h3>
+        <table>
+            <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+            <tr><td class="req-id">FR-040</td><td>First launch requires network to download route index</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">FR-041</td><td>Show cached ETA data when offline</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">FR-042</td><td>Display offline mode indicator</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">FR-043</td><td>Auto-resume live updates when network restores</td><td><span class="badge badge-must">Must</span></td></tr>
+        </table>
+
+        <h3>3.6 User Interface</h3>
+        <table>
+            <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+            <tr><td class="req-id">FR-049</td><td>Show welcome screen on first launch</td><td><span class="badge badge-should">Should</span></td></tr>
+            <tr><td class="req-id">FR-050</td><td>Support light and dark mode</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">FR-051</td><td>Support portrait and landscape orientation</td><td><span class="badge badge-should">Should</span></td></tr>
+            <tr><td class="req-id">FR-052</td><td>Provide trilingual UI (Traditional Chinese, Simplified Chinese, English)</td><td><span class="badge badge-must">Must</span></td></tr>
+        </table>
+
+        <h2>4. ETA State Display</h2>
+        <p>Each route card displays a visual state based on data freshness and network conditions:</p>
+        <table>
+            <tr><th>State</th><th>Condition</th><th>Display</th></tr>
+            <tr><td>Fresh</td><td>Cache &lt; 90s</td><td>Full opacity</td></tr>
+            <tr><td>Stale</td><td>Cache 90s – 5min</td><td>80% opacity, amber clock</td></tr>
+            <tr><td>Offline</td><td>Cache 5–30min or no network</td><td>60% opacity, offline icon</td></tr>
+            <tr><td>Error</td><td>Cache &gt; 30min or API failure</td><td>Red triangle icon</td></tr>
+            <tr><td>No Service</td><td>API returns empty array</td><td>"No Service" + moon icon</td></tr>
+            <tr><td>Degraded</td><td>ETA &gt; 120min</td><td>"Tap to view stop name"</td></tr>
+            <tr><td>Loading</td><td>First load, no cache</td><td>Spinner</td></tr>
+        </table>
+
+        <h2>5. Non-Functional Requirements</h2>
+        <table>
+            <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+            <tr><td class="req-id">NFR-001</td><td>Support iOS 16.0 or later</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">NFR-002</td><td>No registration or login required</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">NFR-003</td><td>No collection of user personal data</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">NFR-004</td><td>No advertisements</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">NFR-005</td><td>No third-party tracking SDKs</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">NFR-006</td><td>ETA API request timeout of 10 seconds</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">NFR-007</td><td>KMB API request interval ≥ 500ms (rate limiting)</td><td><span class="badge badge-must">Must</span></td></tr>
+            <tr><td class="req-id">NFR-008</td><td>All data stored locally on device, no server upload</td><td><span class="badge badge-must">Must</span></td></tr>
+        </table>
+
+        <h2>6. Data Sources</h2>
+        <table>
+            <tr><th>Transport</th><th>API Source</th></tr>
+            <tr><td>KMB</td><td>data.etabus.gov.hk</td></tr>
+            <tr><td>Citybus</td><td>rt.data.gov.hk (CTB ETA API)</td></tr>
+            <tr><td>MTR</td><td>rt.data.gov.hk (Next Train API)</td></tr>
+            <tr><td>Ferry</td><td>Transport Department Open Data (static timetables)</td></tr>
+        </table>
+    </div>
+</div>
+
+<script>
+function showLang(lang, event) {
+    event.preventDefault();
+    document.querySelectorAll('.lang-section').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.lang-tabs a').forEach(el => el.classList.remove('active'));
+    document.getElementById('lang-' + lang).classList.add('active');
+    event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
