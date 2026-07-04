@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>路線App HKTranApp — 香港交通實時資訊</title>
+    <meta name="description" content="路線App — 香港交通實時資訊。巴士、港鐵、渡輪即時到站ETA。">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+            line-height: 1.7;
+            color: #1a1a1a;
+            background: #f5f5f7;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .header img {
+            width: 100px;
+            height: 100px;
+            border-radius: 22px;
+            margin-bottom: 12px;
+        }
+        .header h1 {
+            font-size: 1.8em;
+            color: #1a1a1a;
+        }
+        .header p {
+            color: #86868b;
+            font-size: 0.95em;
+            margin-top: 6px;
+        }
+        .lang-tabs {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .lang-tabs a {
+            padding: 6px 16px;
+            border-radius: 20px;
+            background: #e8e8ed;
+            color: #1a1a1a;
+            text-decoration: none;
+            font-size: 0.85em;
+            transition: background 0.2s;
+        }
+        .lang-tabs a:hover, .lang-tabs a.active {
+            background: #007aff;
+            color: #fff;
+        }
+        .lang-section { display: none; }
+        .lang-section.active { display: block; }
+        h2 {
+            font-size: 1.3em;
+            margin-top: 28px;
+            margin-bottom: 10px;
+            color: #1d1d1f;
+        }
+        p, li { margin-bottom: 8px; color: #424245; }
+        ul { padding-left: 20px; margin-bottom: 12px; }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .feature-card {
+            text-align: center;
+            padding: 20px;
+            background: #f5f5f7;
+            border-radius: 12px;
+        }
+        .feature-card .icon {
+            font-size: 2.2em;
+            margin-bottom: 8px;
+        }
+        .feature-card h3 {
+            font-size: 1em;
+            margin-bottom: 4px;
+            color: #1d1d1f;
+        }
+        .feature-card p {
+            font-size: 0.85em;
+            color: #6e6e73;
+        }
+        .app-store-badge {
+            text-align: center;
+            margin: 28px 0;
+        }
+        .app-store-badge a {
+            display: inline-block;
+            background: #000;
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 0.95em;
+            font-weight: 600;
+        }
+        .links {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .links a {
+            color: #007aff;
+            text-decoration: none;
+            margin: 0 12px;
+            font-size: 0.9em;
+        }
+        a { color: #007aff; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <img src="icon.png" alt="路線App HKTranApp">
+        <h1>路線App / HKTranApp</h1>
+        <p>香港交通實時資訊 · HK Transit Info · 香港交通实时资讯</p>
+    </div>
+
+    <div class="lang-tabs">
+        <a href="#" class="active" onclick="showLang('hant', event)">繁體中文</a>
+        <a href="#" onclick="showLang('hans', event)">简体中文</a>
+        <a href="#" onclick="showLang('en', event)">English</a>
+    </div>
+
+    <!-- 繁體中文 -->
+    <div class="lang-section active" id="lang-hant">
+        <p style="text-align:center; font-size:1.05em; color:#424245;">告別盲等！一個App掌握香港巴士、港鐵及渡輪的即時到站資訊。</p>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="icon">🚌</div>
+                <h3>巴士即時ETA</h3>
+                <p>九巴、城巴實時到站時間</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🚇</div>
+                <h3>港鐵月台資訊</h3>
+                <p>即時班次及月台資訊</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">⛴️</div>
+                <h3>渡輪時間表</h3>
+                <p>主要航線航班時間</p>
+            </div>
+        </div>
+
+        <h2>功能特色</h2>
+        <ul>
+            <li><strong>即時到站：</strong>巴士、港鐵、渡輪一站通，ETA自動刷新</li>
+            <li><strong>快速搜尋：</strong>支援路線號碼及車站名稱搜尋，秒速找到目標路線</li>
+            <li><strong>個人收藏：</strong>自訂收藏路線，打開App即看常用組合</li>
+            <li><strong>離線搜尋：</strong>內置路線索引，無網絡亦能搜尋</li>
+            <li><strong>簡潔介面：</strong>直觀設計，一開即用，專注實用資訊</li>
+        </ul>
+
+        <h2>支援的交通工具</h2>
+        <ul>
+            <li>九龍巴士（KMB）— 全線即時到站資訊</li>
+            <li>城巴（Citybus）— 全線即時到站資訊</li>
+            <li>港鐵（MTR）— 主要鐵路線班次資訊</li>
+            <li>渡輪（Ferry）— 主要航線航班時間表</li>
+        </ul>
+
+        <div class="app-store-badge">
+            <a href="https://apps.apple.com/app/idHKTranApp">📱 即將上架 App Store</a>
+        </div>
+    </div>
+
+    <!-- 简体中文 -->
+    <div class="lang-section" id="lang-hans">
+        <p style="text-align:center; font-size:1.05em; color:#424245;">告别盲等！一个App掌握香港巴士、港铁及渡轮的实时到站信息。</p>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="icon">🚌</div>
+                <h3>巴士实时ETA</h3>
+                <p>九巴、城巴实时到站时间</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🚇</div>
+                <h3>港铁月台资讯</h3>
+                <p>实时班次及月台资讯</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">⛴️</div>
+                <h3>渡轮时间表</h3>
+                <p>主要航线航班时间</p>
+            </div>
+        </div>
+
+        <h2>功能特色</h2>
+        <ul>
+            <li><strong>实时到站：</strong>巴士、港铁、渡轮一站通，ETA自动刷新</li>
+            <li><strong>快速搜索：</strong>支援路线号码及车站名称搜索，秒速找到目标路线</li>
+            <li><strong>个人收藏：</strong>自定义收藏路线，打开App即看常用组合</li>
+            <li><strong>离线搜索：</strong>内置路线索引，无网络亦能搜索</li>
+            <li><strong>简洁界面：</strong>直观设计，一开即用，专注实用信息</li>
+        </ul>
+
+        <h2>支持的交通工具</h2>
+        <ul>
+            <li>九龙巴士（KMB）— 全线实时到站信息</li>
+            <li>城巴（Citybus）— 全线实时到站信息</li>
+            <li>港铁（MTR）— 主要铁路线班次信息</li>
+            <li>渡轮（Ferry）— 主要航线航班时间表</li>
+        </ul>
+
+        <div class="app-store-badge">
+            <a href="https://apps.apple.com/app/idHKTranApp">📱 即将上架 App Store</a>
+        </div>
+    </div>
+
+    <!-- English -->
+    <div class="lang-section" id="lang-en">
+        <p style="text-align:center; font-size:1.05em; color:#424245;">Stop guessing, start knowing! Real-time arrival info for Hong Kong buses, MTR, and ferries — all in one app.</p>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="icon">🚌</div>
+                <h3>Real-time Bus ETA</h3>
+                <p>KMB & Citybus live arrivals</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🚇</div>
+                <h3>MTR Platform Info</h3>
+                <p>Live train schedules & platforms</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">⛴️</div>
+                <h3>Ferry Timetables</h3>
+                <p>Major route schedules</p>
+            </div>
+        </div>
+
+        <h2>Key Features</h2>
+        <ul>
+            <li><strong>Live Arrivals:</strong> Buses, MTR, and ferries in one app with auto-refreshing ETA</li>
+            <li><strong>Instant Search:</strong> Find routes by number or station name in seconds</li>
+            <li><strong>Personal Favorites:</strong> Save your frequently used routes for quick access</li>
+            <li><strong>Offline Search:</strong> Built-in route index works without an internet connection</li>
+            <li><strong>Clean Interface:</strong> Intuitive design — open and go, focused on what matters</li>
+        </ul>
+
+        <h2>Supported Transport</h2>
+        <ul>
+            <li>KMB — All routes with real-time arrivals</li>
+            <li>Citybus — All routes with real-time arrivals</li>
+            <li>MTR — Major rail lines with live schedules</li>
+            <li>Ferry — Major routes with timetable information</li>
+        </ul>
+
+        <div class="app-store-badge">
+            <a href="https://apps.apple.com/app/idHKTranApp">📱 Coming soon to App Store</a>
+        </div>
+    </div>
+
+    <div class="links">
+        <a href="privacy.htm">隱私政策 Privacy Policy</a>
+        <a href="support.htm">支援 Support</a>
+    </div>
+</div>
+
+<script>
+function showLang(lang, event) {
+    event.preventDefault();
+    document.querySelectorAll('.lang-section').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.lang-tabs a').forEach(el => el.classList.remove('active'));
+    document.getElementById('lang-' + lang).classList.add('active');
+    event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
